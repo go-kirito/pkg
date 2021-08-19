@@ -1,4 +1,4 @@
-package app
+package application
 
 import (
 	"context"
@@ -8,21 +8,25 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/go-kirito/pkg/log"
 	"github.com/go-kirito/pkg/registry"
 	"github.com/go-kirito/pkg/transport"
+	"github.com/go-kirito/pkg/transport/grpc"
+	"github.com/go-kirito/pkg/transport/http"
+	"github.com/go-kirito/pkg/zlog"
 
 	"github.com/google/uuid"
 	"golang.org/x/sync/errgroup"
 )
 
-// AppInfo is application context value.
-type AppInfo interface {
+// Application
+type Application interface {
 	ID() string
 	Name() string
 	Version() string
 	Metadata() map[string]string
 	Endpoint() []string
+	GrpcServer() *grpc.Server
+	HttpServer() *http.Server
 }
 
 // App is an application components lifecycle manager.
@@ -37,7 +41,7 @@ type App struct {
 func New(opts ...Option) *App {
 	options := options{
 		ctx:    context.Background(),
-		logger: log.DefaultLogger,
+		logger: zlog.Instance(),
 		sigs:   []os.Signal{syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGINT},
 	}
 	if id, err := uuid.NewUUID(); err == nil {
@@ -68,6 +72,14 @@ func (a *App) Metadata() map[string]string { return a.opts.metadata }
 
 // Endpoint returns endpoints.
 func (a *App) Endpoint() []string { return a.instance.Endpoints }
+
+func (a *App) GrpcServer() *grpc.Server {
+	return a.opts.grpcServer
+}
+
+func (a *App) HttpServer() *http.Server {
+	return a.opts.httpServer
+}
 
 // Run executes all OnStart hooks registered with the application's Lifecycle.
 func (a *App) Run() error {
@@ -156,12 +168,12 @@ func (a *App) buildInstance() (*registry.ServiceInstance, error) {
 type appKey struct{}
 
 // NewContext returns a new Context that carries value.
-func NewContext(ctx context.Context, s AppInfo) context.Context {
+func NewContext(ctx context.Context, s Application) context.Context {
 	return context.WithValue(ctx, appKey{}, s)
 }
 
 // FromContext returns the Transport value stored in ctx, if any.
-func FromContext(ctx context.Context) (s AppInfo, ok bool) {
-	s, ok = ctx.Value(appKey{}).(AppInfo)
+func FromContext(ctx context.Context) (s Application, ok bool) {
+	s, ok = ctx.Value(appKey{}).(Application)
 	return
 }

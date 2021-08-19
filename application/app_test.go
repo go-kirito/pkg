@@ -1,4 +1,4 @@
-package app
+package application
 
 import (
 	"testing"
@@ -12,8 +12,8 @@ func TestApp(t *testing.T) {
 	hs := http.NewServer()
 	gs := grpc.NewServer()
 	app := New(
-		Name("kratos"),
-		Version("v1.0.0"),
+		Name("kirito"),
+		Version("v0.0.1"),
 		Server(hs, gs),
 	)
 	time.AfterFunc(time.Second, func() {

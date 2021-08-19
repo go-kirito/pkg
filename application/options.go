@@ -1,13 +1,15 @@
-package app
+package application
 
 import (
 	"context"
 	"net/url"
 	"os"
 
-	"github.com/go-kirito/pkg/log"
 	"github.com/go-kirito/pkg/registry"
 	"github.com/go-kirito/pkg/transport"
+	"github.com/go-kirito/pkg/transport/grpc"
+	"github.com/go-kirito/pkg/transport/http"
+	"github.com/go-kirito/pkg/zlog"
 )
 
 // Option is an application option.
@@ -24,10 +26,12 @@ type options struct {
 	ctx  context.Context
 	sigs []os.Signal
 
-	logger    log.Logger
+	logger    zlog.Logger
 	registrar registry.Registrar
 
-	servers []transport.Server
+	servers    []transport.Server
+	httpServer *http.Server
+	grpcServer *grpc.Server
 }
 
 // ID with service id.
@@ -61,7 +65,7 @@ func Context(ctx context.Context) Option {
 }
 
 // Logger with service logger.
-func Logger(logger log.Logger) Option {
+func Logger(logger zlog.Logger) Option {
 	return func(o *options) { o.logger = logger }
 }
 
