@@ -58,3 +58,7 @@ func UnmarshalKey(key string, val interface{}) error {
 func GetString(key string) string {
 	return conf.GetString(key)
 }
+
+func GetStringMap(key string) map[string]interface{} {
+	return conf.GetStringMap(key)
+}

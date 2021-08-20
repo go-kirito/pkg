@@ -33,14 +33,14 @@ func init() {
 func NewLogger(optsFunc ...OptionFunc) Logger {
 	opts := newOptions(optsFunc...)
 	return zap.NewLogger(
-		zap.Format(opts.format),
-		zap.Level(opts.level),
-		zap.Output(opts.output),
-		zap.Filename(opts.filename),
-		zap.MaxSize(opts.maxSize),
-		zap.MaxBackups(opts.maxBackups),
-		zap.MaxAge(opts.maxAge),
-		zap.Compress(opts.compress),
+		zap.Format(opts.Format),
+		zap.Level(opts.Level),
+		zap.Output(opts.Output),
+		zap.Filename(opts.Filename),
+		zap.MaxSize(opts.MaxSize),
+		zap.MaxBackups(opts.MaxBackups),
+		zap.MaxAge(opts.MaxAge),
+		zap.Compress(opts.Compress),
 	)
 }
 

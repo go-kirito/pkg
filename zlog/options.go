@@ -5,32 +5,36 @@
  */
 package zlog
 
+import "github.com/go-kirito/pkg/zconfig"
+
 type options struct {
-	driver     string
-	format     string
-	output     string
-	level      string
-	filename   string
-	maxSize    int
-	maxBackups int
-	maxAge     int
-	compress   bool
+	Driver     string
+	Format     string
+	Output     string
+	Level      string
+	Filename   string
+	MaxSize    int
+	MaxBackups int
+	MaxAge     int
+	Compress   bool
 }
 
 type OptionFunc func(*options)
 
 func newOptions(optsFunc ...OptionFunc) options {
 	opt := options{
-		driver:     "zap",
-		output:     "console",
-		level:      "debug",
-		format:     "text",
-		filename:   "./access.log",
-		maxSize:    10,
-		maxBackups: 5,
-		maxAge:     30,
-		compress:   false,
+		Driver:     "zap",
+		Output:     "console",
+		Level:      "debug",
+		Format:     "text",
+		Filename:   "./access.log",
+		MaxSize:    10,
+		MaxBackups: 5,
+		MaxAge:     30,
+		Compress:   false,
 	}
+
+	zconfig.UnmarshalKey("log", &opt)
 
 	for _, o := range optsFunc {
 		o(&opt)
@@ -41,54 +45,54 @@ func newOptions(optsFunc ...OptionFunc) options {
 
 func Driver(driver string) OptionFunc {
 	return func(o *options) {
-		o.driver = driver
+		o.Driver = driver
 	}
 }
 
 func Format(format string) OptionFunc {
 	return func(o *options) {
-		o.format = format
+		o.Format = format
 	}
 }
 
 func Output(output string) OptionFunc {
 	return func(o *options) {
-		o.output = output
+		o.Output = output
 	}
 }
 
 func Level(level string) OptionFunc {
 	return func(o *options) {
-		o.level = level
+		o.Level = level
 	}
 }
 
 func Filename(filename string) OptionFunc {
 	return func(o *options) {
-		o.filename = filename
+		o.Filename = filename
 	}
 }
 
 func MaxSize(maxSize int) OptionFunc {
 	return func(o *options) {
-		o.maxSize = maxSize
+		o.MaxSize = maxSize
 	}
 }
 
 func MaxBackups(maxBackups int) OptionFunc {
 	return func(o *options) {
-		o.maxBackups = maxBackups
+		o.MaxBackups = maxBackups
 	}
 }
 
 func MaxAge(maxAge int) OptionFunc {
 	return func(o *options) {
-		o.maxAge = maxAge
+		o.MaxAge = maxAge
 	}
 }
 
 func Compress(compress bool) OptionFunc {
 	return func(o *options) {
-		o.compress = compress
+		o.Compress = compress
 	}
 }
