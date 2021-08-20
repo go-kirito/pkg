@@ -26,10 +26,16 @@ func OptionsWithConfig() []ServerOption {
 
 	opts := make([]ServerOption, 0)
 
+	if serverConfig.Address == "" {
+		serverConfig.Address = ":80"
+	}
+
 	opts = append(opts, Address(serverConfig.Address))
 
-	timeout := time.Duration(serverConfig.Timeout) * time.Second
-	opts = append(opts, Timeout(timeout))
+	if serverConfig.Timeout > 0 {
+		timeout := time.Duration(serverConfig.Timeout) * time.Second
+		opts = append(opts, Timeout(timeout))
+	}
 
 	return opts
 }
