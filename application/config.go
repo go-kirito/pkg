@@ -25,8 +25,7 @@ func loadServerConfig() *ServerConfig {
 	return serverConfig
 }
 
-// New create on application from config
-func NewWithConfig() *App {
+func OptionsWithConfig() []Option {
 
 	serverConfig := loadServerConfig()
 
@@ -63,5 +62,5 @@ func NewWithConfig() *App {
 		opts = append(opts, Server(tr...))
 	}
 
-	return New(opts...)
+	return opts
 }

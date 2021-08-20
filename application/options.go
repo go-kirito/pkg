@@ -71,7 +71,9 @@ func Logger(logger zlog.Logger) Option {
 
 // Server with transport servers.
 func Server(srv ...transport.Server) Option {
-	return func(o *options) { o.servers = srv }
+	return func(o *options) {
+		o.servers = srv
+	}
 }
 
 // Signal with exit signals.
@@ -85,9 +87,15 @@ func Registrar(r registry.Registrar) Option {
 }
 
 func HttpServer(srv *http.Server) Option {
-	return func(o *options) { o.httpServer = srv }
+	return func(o *options) {
+		o.httpServer = srv
+		o.servers = append(o.servers, srv)
+	}
 }
 
 func GrpcServer(srv *grpc.Server) Option {
-	return func(o *options) { o.grpcServer = srv }
+	return func(o *options) {
+		o.grpcServer = srv
+		o.servers = append(o.servers, srv)
+	}
 }
