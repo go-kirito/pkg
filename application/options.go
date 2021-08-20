@@ -83,3 +83,11 @@ func Signal(sigs ...os.Signal) Option {
 func Registrar(r registry.Registrar) Option {
 	return func(o *options) { o.registrar = r }
 }
+
+func HttpServer(srv *http.Server) Option {
+	return func(o *options) { o.httpServer = srv }
+}
+
+func GrpcServer(srv *grpc.Server) Option {
+	return func(o *options) { o.grpcServer = srv }
+}

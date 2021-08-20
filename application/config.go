@@ -45,14 +45,18 @@ func NewWithConfig() *App {
 	grpcOptions := grpc.OptionsWithConfig()
 
 	if grpcOptions != nil {
-		tr = append(tr, grpc.NewServer(grpcOptions...))
+		grpcServer := grpc.NewServer(grpcOptions...)
+		opts = append(opts, GrpcServer(grpcServer))
+		tr = append(tr, grpcServer)
 	}
 
 	httpOptions := http.OptionsWithConfig()
 
 	if httpOptions != nil {
 		//初始化http
-		tr = append(tr, http.NewServer(httpOptions...))
+		httpServer := http.NewServer(httpOptions...)
+		opts = append(opts, HttpServer(httpServer))
+		tr = append(tr, httpServer)
 	}
 
 	if len(tr) > 0 {
