@@ -10,7 +10,6 @@ import (
 	apimd "github.com/go-kirito/pkg/api/metadata"
 	ic "github.com/go-kirito/pkg/internal/context"
 	"github.com/go-kirito/pkg/internal/host"
-	"github.com/go-kirito/pkg/log"
 	"github.com/go-kirito/pkg/middleware"
 	"github.com/go-kirito/pkg/transport"
 	"github.com/go-kirito/pkg/zlog"
@@ -50,9 +49,9 @@ func Timeout(timeout time.Duration) ServerOption {
 }
 
 // Logger with server logger.
-func Logger(logger log.Logger) ServerOption {
+func Logger(logger zlog.Logger) ServerOption {
 	return func(s *Server) {
-		s.log = log.NewHelper(logger)
+		s.log = zlog.Instance()
 	}
 }
 

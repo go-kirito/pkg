@@ -19,7 +19,7 @@ type ServerConfig struct {
 
 func loadServerConfig() *ServerConfig {
 	serverConfig := new(ServerConfig)
-	if err := zconfig.UnmarshalKey("server", serverConfig); err != nil {
+	if err := zconfig.UnmarshalKey("application", serverConfig); err != nil {
 		return nil
 	}
 	return serverConfig
