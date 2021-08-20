@@ -22,20 +22,21 @@ type options struct {
 type OptionFunc func(*options)
 
 func NewOptionsWithConfig() options {
-	var opt options
+
+	opt := options{
+		Driver:     "zap",
+		Output:     "console",
+		Level:      "debug",
+		Format:     "text",
+		Filename:   "./access.log",
+		MaxSize:    10,
+		MaxBackups: 5,
+		MaxAge:     30,
+		Compress:   false,
+	}
 
 	if err := zconfig.UnmarshalKey("log", &opt); err != nil {
-		return options{
-			Driver:     "zap",
-			Output:     "console",
-			Level:      "debug",
-			Format:     "text",
-			Filename:   "./access.log",
-			MaxSize:    10,
-			MaxBackups: 5,
-			MaxAge:     30,
-			Compress:   false,
-		}
+		return opt
 	}
 
 	return opt
