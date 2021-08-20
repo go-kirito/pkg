@@ -26,12 +26,14 @@ type Logger interface {
 
 var log Logger
 
-func init() {
-	log = NewLogger()
-}
-
 func NewLogger(optsFunc ...OptionFunc) Logger {
-	opts := newOptions(optsFunc...)
+
+	opts := NewOptionsWithConfig()
+
+	for _, o := range optsFunc {
+		o(&opts)
+	}
+
 	return zap.NewLogger(
 		zap.Format(opts.Format),
 		zap.Level(opts.Level),
@@ -42,6 +44,9 @@ func NewLogger(optsFunc ...OptionFunc) Logger {
 		zap.MaxAge(opts.MaxAge),
 		zap.Compress(opts.Compress),
 	)
+}
+func Init() {
+	log = NewLogger()
 }
 
 func Instance() Logger {
