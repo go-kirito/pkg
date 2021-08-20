@@ -1,7 +1,7 @@
 package env
 
 import (
-	"github.com/go-kirito/pkg/config"
+	"github.com/go-kirito/pkg/zconfig/config"
 )
 
 type watcher struct {

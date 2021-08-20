@@ -39,6 +39,7 @@ type App struct {
 
 // New create an application lifecycle manager.
 func New(opts ...Option) *App {
+
 	options := options{
 		ctx:    context.Background(),
 		logger: zlog.Instance(),
@@ -47,6 +48,7 @@ func New(opts ...Option) *App {
 	if id, err := uuid.NewUUID(); err == nil {
 		options.id = id.String()
 	}
+
 	for _, o := range opts {
 		o(&options)
 	}

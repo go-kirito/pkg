@@ -13,6 +13,7 @@ import (
 	"github.com/go-kirito/pkg/log"
 	"github.com/go-kirito/pkg/middleware"
 	"github.com/go-kirito/pkg/transport"
+	"github.com/go-kirito/pkg/zlog"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
@@ -87,7 +88,7 @@ type Server struct {
 	address    string
 	endpoint   *url.URL
 	timeout    time.Duration
-	log        *log.Helper
+	log        zlog.Logger
 	middleware []middleware.Middleware
 	ints       []grpc.UnaryServerInterceptor
 	grpcOpts   []grpc.ServerOption
@@ -102,7 +103,7 @@ func NewServer(opts ...ServerOption) *Server {
 		address: ":0",
 		timeout: 1 * time.Second,
 		health:  health.NewServer(),
-		log:     log.NewHelper(log.DefaultLogger),
+		log:     zlog.Instance(),
 	}
 	for _, o := range opts {
 		o(srv)

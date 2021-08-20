@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/go-kirito/pkg/config"
+	"github.com/go-kirito/pkg/zconfig/config"
 )
 
 type env struct {
