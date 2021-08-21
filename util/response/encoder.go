@@ -14,9 +14,9 @@ import (
 )
 
 type response struct {
-	Code    string
-	Message string
-	Data    interface{}
+	Code    string      `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 // DefaultResponseEncoder encodes the object to the HTTP response.
