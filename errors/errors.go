@@ -21,6 +21,8 @@ const (
 
 //go:generate protoc -I. --go_out=paths=source_relative:. errors.proto
 
+var _codes = map[string]*Error{}
+
 func (e *Error) Error() string {
 	return fmt.Sprintf("error: code = %d reason = %s message = %s metadata = %v", e.Code, e.Reason, e.Message, e.Metadata)
 }
@@ -52,11 +54,17 @@ func (e *Error) WithMetadata(md map[string]string) *Error {
 
 // New returns an error object for the code, message.
 func New(code int, reason, message string) *Error {
-	return &Error{
+	e := &Error{
 		Code:    int32(code),
 		Message: message,
 		Reason:  reason,
 	}
+	if _, ok := _codes[e.Reason]; ok {
+		panic(fmt.Sprintf("ecode: %s already exist", e.Reason))
+	}
+	_codes[e.Reason] = e
+
+	return e
 }
 
 // Newf New(code fmt.Sprintf(format, a...))
