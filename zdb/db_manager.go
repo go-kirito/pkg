@@ -28,7 +28,8 @@ func newDBManager() *dbManager {
 
 	//读取配置文件
 	if err := zconfig.UnmarshalKey("database", &dm.opts); err != nil {
-		zlog.Panic("读取数据库配置文件失败，请确认是否有`database`的配置")
+		zlog.Warn("读取数据库配置文件失败，请确认是否有`database`的配置")
+		return nil
 	}
 
 	//db初始化连接
