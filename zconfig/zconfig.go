@@ -8,8 +8,8 @@ package zconfig
 import (
 	"bytes"
 	"io/ioutil"
-	"log"
 
+	"github.com/go-kirito/pkg/zlog"
 	"github.com/spf13/viper"
 )
 
@@ -28,20 +28,20 @@ func Load(path string) error {
 		return err
 	}
 
-	log.Printf("use config file -> %s\n", v.ConfigFileUsed())
+	zlog.Infof("[config] Load Config File:%s\n", v.ConfigFileUsed())
 
 	includes := v.GetStringSlice("includes")
 	for _, i := range includes {
 
 		fd, err := ioutil.ReadFile(i)
 		if err != nil {
-			log.Fatal("load config err:", err.Error())
+			zlog.Fatal("load config err:", err.Error())
 			return err
 		}
 
 		v.MergeConfig(bytes.NewReader(fd))
 
-		log.Printf("load config file -> %s\n", i)
+		zlog.Infof("[config] Load Config File:%s\n", i)
 
 	}
 

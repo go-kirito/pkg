@@ -85,6 +85,7 @@ func (a *App) HttpServer() *http.Server {
 
 // Run executes all OnStart hooks registered with the application's Lifecycle.
 func (a *App) Run() error {
+	zlog.Infof("[Application:%s] Running", a.Name())
 	instance, err := a.buildInstance()
 	if err != nil {
 		return err
