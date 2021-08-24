@@ -6,6 +6,7 @@
 package response
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-kirito/pkg/encoding"
@@ -23,19 +24,15 @@ type response struct {
 func Encoder(w http.ResponseWriter, r *http.Request, v interface{}) error {
 	codec, _ := CodecForRequest(r, "Accept")
 
-	resp := response{
-		Code:    "0",
-		Message: "",
-		Data:    v,
-	}
-	data, err := codec.Marshal(resp)
+	data, err := codec.Marshal(v)
 
 	if err != nil {
 		return err
 	}
 
+	resp := fmt.Sprintf("{\"code\":\"0\",\"message\":\"\",\"data\":%s}", string(data))
 	w.Header().Set("Content-Type", httputil.ContentType(codec.Name()))
-	w.Write(data)
+	w.Write([]byte(resp))
 	return nil
 }
 
