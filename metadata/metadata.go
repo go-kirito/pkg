@@ -86,6 +86,16 @@ func UID(ctx context.Context) int64 {
 	return 0
 }
 
+func FactoryId(ctx context.Context) int32 {
+	if md, ok := FromServerContext(ctx); ok {
+		if v, ok := md["x-md-fid"]; ok {
+			fid, _ := strconv.ParseInt(v, 10, 32)
+			return int32(fid)
+		}
+	}
+	return 0
+}
+
 type clientMetadataKey struct{}
 
 // NewClientContext creates a new context with client md attached.
