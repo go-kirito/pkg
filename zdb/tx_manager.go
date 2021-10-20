@@ -8,12 +8,14 @@ package zdb
 import (
 	"context"
 	"database/sql"
+	"sync"
 
 	"github.com/go-kirito/pkg/util/id"
 )
 
 type txManager struct {
 	m map[int64]map[string]*DB
+	sync.Mutex
 }
 
 func newTxManager() *txManager {
@@ -23,6 +25,8 @@ func newTxManager() *txManager {
 }
 
 func (tm *txManager) getDB(name string, txId int64) *DB {
+	tm.Lock()
+	defer tm.Unlock()
 	if dbs, ok := tm.m[txId]; ok {
 		if db, ok := dbs[name]; ok {
 			return db
@@ -32,6 +36,8 @@ func (tm *txManager) getDB(name string, txId int64) *DB {
 }
 
 func (tm *txManager) addDB(name string, txId int64, db *DB) {
+	tm.Lock()
+	defer tm.Unlock()
 	dbs, ok := tm.m[txId]
 	if !ok {
 		dbs = make(map[string]*DB)
@@ -47,9 +53,10 @@ func (tm *txManager) BeginTx(ctx context.Context, opts ...*sql.TxOptions) *TxCon
 }
 
 func (tm *txManager) Commit(tc *TxContext) error {
-
+	tm.Lock()
 	defer func() {
 		delete(tm.m, tc.getTxId())
+		tm.Unlock()
 	}()
 
 	if dbs, ok := tm.m[tc.getTxId()]; ok {
@@ -65,8 +72,10 @@ func (tm *txManager) Commit(tc *TxContext) error {
 }
 
 func (tm *txManager) Rollback(tc *TxContext) error {
+	tm.Lock()
 	defer func() {
 		delete(tm.m, tc.getTxId())
+		tm.Unlock()
 	}()
 
 	if dbs, ok := tm.m[tc.getTxId()]; ok {

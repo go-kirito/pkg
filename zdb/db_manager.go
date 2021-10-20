@@ -58,8 +58,6 @@ func newDBManager() *dbManager {
 		db.SetMaxOpenConns(opt.MaxOpenConns)
 		db.SetMaxIdleConns(opt.MaxIdleConns)
 
-		engine.Debug()
-
 		dm.dbs[name] = engine
 	}
 

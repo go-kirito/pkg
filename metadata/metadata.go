@@ -3,7 +3,6 @@ package metadata
 import (
 	"context"
 	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -74,26 +73,6 @@ func NewServerContext(ctx context.Context, md Metadata) context.Context {
 func FromServerContext(ctx context.Context) (Metadata, bool) {
 	md, ok := ctx.Value(serverMetadataKey{}).(Metadata)
 	return md, ok
-}
-
-func UID(ctx context.Context) int64 {
-	if md, ok := FromServerContext(ctx); ok {
-		if v, ok := md["x-md-uid"]; ok {
-			uid, _ := strconv.ParseInt(v, 10, 64)
-			return uid
-		}
-	}
-	return 0
-}
-
-func FactoryId(ctx context.Context) int32 {
-	if md, ok := FromServerContext(ctx); ok {
-		if v, ok := md["x-md-fid"]; ok {
-			fid, _ := strconv.ParseInt(v, 10, 32)
-			return int32(fid)
-		}
-	}
-	return 0
 }
 
 type clientMetadataKey struct{}
