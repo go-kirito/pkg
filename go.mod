@@ -3,6 +3,7 @@ module github.com/go-kirito/pkg
 go 1.15
 
 require (
+	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1300
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/go-playground/form/v4 v4.1.3
