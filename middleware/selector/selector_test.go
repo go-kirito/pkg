@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/go-kratos/kratos/v2/middleware"
-	"github.com/go-kratos/kratos/v2/transport"
+	"github.com/go-kirito/pkg/middleware"
+	"github.com/go-kirito/pkg/transport"
 	"github.com/stretchr/testify/assert"
 )
 
