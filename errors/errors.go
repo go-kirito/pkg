@@ -59,9 +59,9 @@ func New(code int, reason, message string) *Error {
 		Message: message,
 		Reason:  reason,
 	}
-	if _, ok := _codes[e.Reason]; ok {
-		panic(fmt.Sprintf("ecode: %s already exist", e.Reason))
-	}
+	//if _, ok := _codes[e.Reason]; ok {
+	//	panic(fmt.Sprintf("ecode: %s already exist", e.Reason))
+	//}
 	_codes[e.Reason] = e
 	return e
 }
