@@ -3,7 +3,7 @@
  * @Email : cnnopsky@gmail.com
  * @Date : 2021/10/25 13:34
  */
-package ip
+package net
 
 import (
 	"net"
