@@ -84,7 +84,7 @@ func Server(keyFunc jwt.Keyfunc, opts ...Option) middleware.Middleware {
 				jwtToken := auths[1]
 				parser := new(jwt.Parser)
 				parser.UseJSONNumber = true
-				tokenInfo, err := parser.ParseWithClaims(jwtToken, o.claims, keyFunc)
+				tokenInfo, err := parser.Parse(jwtToken, keyFunc)
 				if err != nil {
 					if ve, ok := err.(*jwt.ValidationError); ok {
 						if ve.Errors&jwt.ValidationErrorMalformed != 0 {
