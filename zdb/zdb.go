@@ -59,6 +59,7 @@ func NewOrm(ctx context.Context, dbName ...string) (db *DB) {
 
 	if db != nil {
 		db.orm = db.orm.Session(&gorm.Session{NewDB: true})
+		db.orm.Error = nil
 		return db
 	}
 
