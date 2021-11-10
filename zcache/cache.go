@@ -9,7 +9,7 @@ import (
 	"context"
 	"time"
 
-	"factory/pkg/zcache/redis"
+	"github.com/go-kirito/pkg/zcache/redis"
 
 	"github.com/go-kirito/pkg/zconfig"
 	"github.com/go-kirito/pkg/zlog"
