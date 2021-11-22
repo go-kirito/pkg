@@ -84,9 +84,13 @@ func parseEndpoint(endpoints []string) (string, error) {
 }
 
 func parseAttributes(md map[string]string) *attributes.Attributes {
-	pairs := make([]interface{}, 0, len(md))
+	var a *attributes.Attributes
 	for k, v := range md {
-		pairs = append(pairs, k, v)
+		if a == nil {
+			a = attributes.New(k, v)
+		} else {
+			a.WithValue(k, v)
+		}
 	}
-	return attributes.New(pairs...)
+	return a
 }
