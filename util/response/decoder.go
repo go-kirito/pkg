@@ -11,6 +11,7 @@ import (
 	"net/http"
 
 	"github.com/go-kirito/pkg/encoding"
+	"github.com/go-kirito/pkg/errors"
 	"github.com/go-kirito/pkg/internal/httputil"
 )
 
@@ -49,4 +50,23 @@ func CodecForResponse(r *http.Response) encoding.Codec {
 		return codec
 	}
 	return encoding.GetCodec("json")
+}
+
+func DecodeErrorfunc(ctx context.Context, res *http.Response) error {
+	if res.StatusCode >= 200 && res.StatusCode <= 299 {
+		return nil
+	}
+	defer res.Body.Close()
+	data, err := ioutil.ReadAll(res.Body)
+	if err == nil {
+		e := new(errors.Error)
+		var resp response
+		if err = CodecForResponse(res).Unmarshal(data, resp); err == nil {
+			e.Code = int32(res.StatusCode)
+			e.Reason = resp.Code
+			e.Message = resp.Message
+			return e
+		}
+	}
+	return errors.Errorf(res.StatusCode, errors.UnknownReason, err.Error())
 }
