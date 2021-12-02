@@ -52,7 +52,7 @@ func CodecForResponse(r *http.Response) encoding.Codec {
 	return encoding.GetCodec("json")
 }
 
-func DecodeErrorfunc(ctx context.Context, res *http.Response) error {
+func DecodeError(ctx context.Context, res *http.Response) error {
 	if res.StatusCode >= 200 && res.StatusCode <= 299 {
 		return nil
 	}
@@ -61,7 +61,7 @@ func DecodeErrorfunc(ctx context.Context, res *http.Response) error {
 	if err == nil {
 		e := new(errors.Error)
 		var resp response
-		if err = CodecForResponse(res).Unmarshal(data, resp); err == nil {
+		if err = CodecForResponse(res).Unmarshal(data, &resp); err == nil {
 			e.Code = int32(res.StatusCode)
 			e.Reason = resp.Code
 			e.Message = resp.Message
