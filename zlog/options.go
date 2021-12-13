@@ -8,15 +8,21 @@ package zlog
 import "github.com/go-kirito/pkg/zconfig"
 
 type options struct {
-	Driver     string
-	Format     string
-	Output     string
-	Level      string
-	Filename   string
-	MaxSize    int
-	MaxBackups int
-	MaxAge     int
-	Compress   bool
+	Driver          string
+	Format          string
+	Output          string
+	Level           string
+	Filename        string
+	MaxSize         int
+	MaxBackups      int
+	MaxAge          int
+	Compress        bool
+	AccessKey       string
+	AccessKeySecret string
+	EndPoint        string
+	Project         string
+	LogStore        string
+	Topic           string
 }
 
 type OptionFunc func(*options)
@@ -94,5 +100,41 @@ func MaxAge(maxAge int) OptionFunc {
 func Compress(compress bool) OptionFunc {
 	return func(o *options) {
 		o.Compress = compress
+	}
+}
+
+func AccessKey(accessKey string) OptionFunc {
+	return func(o *options) {
+		o.AccessKey = accessKey
+	}
+}
+
+func AccessKeySecret(accessKeySecret string) OptionFunc {
+	return func(o *options) {
+		o.AccessKeySecret = accessKeySecret
+	}
+}
+
+func EndPoint(endpoint string) OptionFunc {
+	return func(o *options) {
+		o.EndPoint = endpoint
+	}
+}
+
+func Project(project string) OptionFunc {
+	return func(o *options) {
+		o.Project = project
+	}
+}
+
+func LogStore(logStore string) OptionFunc {
+	return func(o *options) {
+		o.LogStore = logStore
+	}
+}
+
+func Topic(topic string) OptionFunc {
+	return func(o *options) {
+		o.Topic = topic
 	}
 }

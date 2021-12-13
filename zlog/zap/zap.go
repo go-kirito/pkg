@@ -9,6 +9,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/go-kirito/pkg/zlog/writer"
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -56,6 +57,19 @@ func getEncoder(opts options) zapcore.Encoder {
 func getWriteSyncer(opts options) zapcore.WriteSyncer {
 	if opts.output == "console" {
 		return zapcore.AddSync(os.Stderr)
+	}
+
+	if opts.output == "aliyun" {
+		aliyunOpts := &writer.AliyunOption{
+			AccessKey:       opts.accessKey,
+			AccessKeySecret: opts.accessKeySecret,
+			EndPoint:        opts.endPoint,
+			Project:         opts.project,
+			LogStore:        opts.logStore,
+			Topic:           opts.topic,
+		}
+		aliyunWriter := writer.NewAliyunWriter(aliyunOpts)
+		return zapcore.AddSync(aliyunWriter)
 	}
 
 	l := &lumberjack.Logger{

@@ -5,7 +5,11 @@
  */
 package zlog
 
-import "github.com/go-kirito/pkg/zlog/zap"
+import (
+	log2 "log"
+
+	"github.com/go-kirito/pkg/zlog/zap"
+)
 
 type Logger interface {
 	Debugf(format string, args ...interface{})
@@ -43,8 +47,50 @@ func NewLogger(optsFunc ...OptionFunc) Logger {
 		zap.MaxBackups(opts.MaxBackups),
 		zap.MaxAge(opts.MaxAge),
 		zap.Compress(opts.Compress),
+		zap.AccessKey(opts.AccessKey),
+		zap.AccessKeySecret(opts.AccessKeySecret),
+		zap.EndPoint(opts.EndPoint),
+		zap.Project(opts.Project),
+		zap.LogStore(opts.LogStore),
+		zap.Topic(opts.Topic),
 	)
 }
+
+func NewLoggerWithOption(optsFunc ...OptionFunc) Logger {
+	opts := options{
+		Driver:     "zap",
+		Output:     "console",
+		Level:      "debug",
+		Format:     "text",
+		Filename:   "./access.log",
+		MaxSize:    10,
+		MaxBackups: 5,
+		MaxAge:     30,
+		Compress:   false,
+	}
+	for _, o := range optsFunc {
+		o(&opts)
+	}
+	log2.Println(opts.Output)
+
+	return zap.NewLogger(
+		zap.Format(opts.Format),
+		zap.Level(opts.Level),
+		zap.Output(opts.Output),
+		zap.Filename(opts.Filename),
+		zap.MaxSize(opts.MaxSize),
+		zap.MaxBackups(opts.MaxBackups),
+		zap.MaxAge(opts.MaxAge),
+		zap.Compress(opts.Compress),
+		zap.AccessKey(opts.AccessKey),
+		zap.AccessKeySecret(opts.AccessKeySecret),
+		zap.EndPoint(opts.EndPoint),
+		zap.Project(opts.Project),
+		zap.LogStore(opts.LogStore),
+		zap.Topic(opts.Topic),
+	)
+}
+
 func Init() {
 	log = NewLogger()
 }

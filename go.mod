@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1300
+	github.com/aliyun/aliyun-log-go-sdk v0.1.27 // indirect
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/go-playground/form/v4 v4.1.3
@@ -12,7 +13,9 @@ require (
 	github.com/google/uuid v1.2.0
 	github.com/gorilla/mux v1.8.0
 	github.com/imdario/mergo v0.3.12
+	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/natefinch/lumberjack v2.0.0+incompatible
+	github.com/pierrec/xxHash v0.0.0-20170714082455-a0006b13c722 // indirect
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
 	go.opentelemetry.io/otel v1.0.0-RC1
