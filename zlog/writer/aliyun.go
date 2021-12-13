@@ -7,6 +7,7 @@ package writer
 
 import (
 	"io"
+	"os"
 	"time"
 
 	sls "github.com/aliyun/aliyun-log-go-sdk"
@@ -64,7 +65,9 @@ func (a AliyunWriter) Write(p []byte) (n int, err error) {
 		Contents: content,
 	}
 
-	err = a.instance.SendLog(a.opt.Project, a.opt.LogStore, a.opt.Topic, "127.0.0.1", log)
+	hostName, _ := os.Hostname()
+
+	err = a.instance.SendLog(a.opt.Project, a.opt.LogStore, a.opt.Topic, hostName, log)
 	if err != nil {
 		return -1, err
 	}
