@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/go-kirito/pkg/middleware"
@@ -97,7 +98,7 @@ func dial(ctx context.Context, insecure bool, opts ...ClientOption) (*grpc.Clien
 	}
 	var grpcOpts = []grpc.DialOption{
 		//todo: grpc.WithBalancerName is deprecated.
-		grpc.WithBalancerName(roundrobin.Name), //nolint:staticcheck
+		grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, roundrobin.Name)), //nolint:staticcheck
 		grpc.WithChainUnaryInterceptor(ints...),
 	}
 	if options.discovery != nil {
