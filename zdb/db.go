@@ -23,6 +23,10 @@ func newDB(name string, orm *gorm.DB) *DB {
 	}
 }
 
+func (db *DB) AutoMigrate(value interface{}) error {
+	return db.orm.AutoMigrate(value)
+}
+
 func (db *DB) Model(value interface{}) *DB {
 	db.orm = db.orm.Model(value)
 	return db
