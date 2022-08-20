@@ -21,9 +21,11 @@ var tm *txManager
 
 var mu sync.RWMutex
 
+var autoMigrate []interface{}
+
 type funcType func(ctx context.Context) (interface{}, error)
 
-//初始化数据库
+// 初始化数据库
 func InitMySQL() {
 	//初始化数据库管理
 	dm = newDBManager()
@@ -108,4 +110,15 @@ func Transaction(ctx context.Context, fn funcType, opts ...*sql.TxOptions) (resp
 	panicked = false
 
 	return
+}
+
+func RegisterAutoMigrate(value interface{}) {
+	autoMigrate = append(autoMigrate, value)
+}
+
+func AutoMigrate() {
+	if len(autoMigrate) > 0 {
+		db := NewOrm(context.Background())
+		db.AutoMigrate(autoMigrate...)
+	}
 }
