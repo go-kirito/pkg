@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/go-kirito/pkg/metadata"
+
 	"github.com/golang-jwt/jwt/v4"
 
 	"github.com/go-kirito/pkg/errors"
@@ -82,8 +84,7 @@ func Server(keyFunc jwt.Keyfunc, opts ...Option) middleware.Middleware {
 					return nil, ErrMissingJwtToken
 				}
 				jwtToken := auths[1]
-				parser := new(jwt.Parser)
-				parser.UseJSONNumber = true
+				parser := jwt.NewParser(jwt.WithJSONNumber())
 				tokenInfo, err := parser.Parse(jwtToken, keyFunc)
 				if err != nil {
 					if ve, ok := err.(*jwt.ValidationError); ok {
@@ -101,7 +102,19 @@ func Server(keyFunc jwt.Keyfunc, opts ...Option) middleware.Middleware {
 				} else if tokenInfo.Method != o.signingMethod {
 					return nil, ErrUnSupportSigningMethod
 				}
-				ctx = NewContext(ctx, tokenInfo.Claims)
+
+				if md, ok := metadata.FromServerContext(ctx); ok {
+					for k, v := range tokenInfo.Claims.(jwt.MapClaims) {
+						if vv, ok := v.(string); ok {
+							md.Set(k, vv)
+						}
+					}
+
+					ctx = metadata.NewServerContext(ctx, md)
+				} else {
+					ctx = NewContext(ctx, tokenInfo.Claims)
+				}
+
 				return handler(ctx, req)
 			}
 			return nil, ErrWrongContext
