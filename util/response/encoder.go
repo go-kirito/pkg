@@ -24,17 +24,11 @@ type response struct {
 func Encoder(w http.ResponseWriter, r *http.Request, v interface{}) error {
 	codec, _ := CodecForRequest(r, "Accept")
 
-	data, err := codec.Marshal(v)
-
-	if err != nil {
-		return err
-	}
-
 	resp := response{
-		Success: false,
+		Success: true,
 		Code:    "000000",
 		Message: "",
-		Data:    data,
+		Data:    v,
 	}
 
 	body, err := codec.Marshal(resp)
