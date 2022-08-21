@@ -7,7 +7,7 @@ package response
 
 import (
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/go-kirito/pkg/encoding"
@@ -20,7 +20,7 @@ func Decoder(ctx context.Context, res *http.Response, out interface{}) error {
 
 	var resp response
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	defer res.Body.Close()
 
 	err = codec.Unmarshal(body, &resp)
@@ -57,7 +57,7 @@ func DecodeError(ctx context.Context, res *http.Response) error {
 		return nil
 	}
 	defer res.Body.Close()
-	data, err := ioutil.ReadAll(res.Body)
+	data, err := io.ReadAll(res.Body)
 	if err == nil {
 		e := new(errors.Error)
 		var resp response
