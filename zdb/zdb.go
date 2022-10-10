@@ -10,6 +10,8 @@ import (
 	"database/sql"
 	"sync"
 
+	"gorm.io/gorm/clause"
+
 	"github.com/go-kirito/pkg/zlog"
 
 	"gorm.io/gorm"
@@ -121,4 +123,8 @@ func AutoMigrate() {
 		db := NewOrm(context.Background())
 		db.AutoMigrate(autoMigrate...)
 	}
+}
+
+func Expr(expr string, args ...interface{}) clause.Expr {
+	return gorm.Expr(expr, args)
 }
