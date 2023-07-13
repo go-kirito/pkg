@@ -27,3 +27,11 @@ func init() {
 func New() int64 {
 	return node.Generate().Int64()
 }
+
+func NewString() string {
+	return node.Generate().String()
+}
+
+func NewBase64() string {
+	return node.Generate().Base64()
+}
