@@ -58,6 +58,18 @@ func GetString(key string) string {
 	return conf.GetString(key)
 }
 
+func GetInt64(key string) int64 {
+	return conf.GetInt64(key)
+}
+
+func GetInt(key string) int {
+	return conf.GetInt(key)
+}
+
+func GetInt32(key string) int32 {
+	return conf.GetInt32(key)
+}
+
 func GetStringMap(key string) map[string]interface{} {
 	return conf.GetStringMap(key)
 }
