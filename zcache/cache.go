@@ -7,6 +7,7 @@ package zcache
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"github.com/go-kirito/pkg/zcache/redis"
@@ -17,6 +18,7 @@ import (
 
 type ICache interface {
 	Set(ctx context.Context, key string, value interface{}, expire time.Duration) error
+	SetNX(ctx context.Context, key string, value interface{}, expire time.Duration) error
 	Get(ctx context.Context, key string) (string, error)
 	SAdd(ctx context.Context, key string, value []interface{}, expire time.Duration) error
 	SMembers(ctx context.Context, key string) ([]string, error)
@@ -33,15 +35,19 @@ type Options struct {
 	Type   string
 }
 
+var cache ICache
+var once = &sync.Once{}
+
 func NewCache() ICache {
-	var opts Options
-	if err := zconfig.UnmarshalKey("cache", &opts); err != nil {
-		zlog.Fatal("read cache config err", err)
-	}
+	once.Do(func() {
+		var opts Options
+		if err := zconfig.UnmarshalKey("cache", &opts); err != nil {
+			zlog.Fatal("read cache config err", err)
+		}
 
-	if opts.Driver == "redis" {
-		return redis.NewCache()
-	}
-
-	return nil
+		if opts.Driver == "redis" {
+			cache = redis.NewCache()
+		}
+	})
+	return cache
 }
