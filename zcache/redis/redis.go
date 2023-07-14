@@ -47,8 +47,8 @@ func (c cache) Set(ctx context.Context, key string, value interface{}, expire ti
 	return c.rdb.Set(ctx, key, value, expire).Err()
 }
 
-func (c cache) SetNX(ctx context.Context, key string, value interface{}, expire time.Duration) error {
-	return c.rdb.SetNX(ctx, key, value, expire).Err()
+func (c cache) SetNX(ctx context.Context, key string, value interface{}, expire time.Duration) (bool, error) {
+	return c.rdb.SetNX(ctx, key, value, expire).Result()
 }
 
 func (c cache) Get(ctx context.Context, key string) (string, error) {

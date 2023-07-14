@@ -18,7 +18,7 @@ import (
 
 type ICache interface {
 	Set(ctx context.Context, key string, value interface{}, expire time.Duration) error
-	SetNX(ctx context.Context, key string, value interface{}, expire time.Duration) error
+	SetNX(ctx context.Context, key string, value interface{}, expire time.Duration) (bool, error)
 	Get(ctx context.Context, key string) (string, error)
 	SAdd(ctx context.Context, key string, value []interface{}, expire time.Duration) error
 	SMembers(ctx context.Context, key string) ([]string, error)
