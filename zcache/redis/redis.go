@@ -59,6 +59,10 @@ func (c cache) Get(ctx context.Context, key string) (string, error) {
 	return val, nil
 }
 
+func (c cache) Del(ctx context.Context, key string) error {
+	return c.rdb.Del(ctx, key).Err()
+}
+
 func (c cache) SAdd(ctx context.Context, key string, value []interface{}, expire time.Duration) error {
 	_, err := c.rdb.SAdd(ctx, key, value...).Result()
 	if err != nil {
