@@ -62,7 +62,7 @@ func New(code int, reason, message string) *Error {
 	if e.Reason != "" {
 		key := fmt.Sprintf("%d_%s_%s", e.Code, e.Reason, e.Message)
 		if _, ok := _codes[key]; ok {
-			panic(fmt.Sprintf("ecode: %s already exist", e.Reason))
+			panic(fmt.Sprintf("ecode: %s,already exist", key))
 		}
 		_codes[key] = e
 	}
