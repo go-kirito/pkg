@@ -50,7 +50,7 @@ func NewBuilder(d registry.Discovery, opts ...Option) resolver.Builder {
 func (b *builder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), b.timeout)
 	defer cancel()
-	w, err := b.discoverer.Watch(ctx, target.Endpoint)
+	w, err := b.discoverer.Watch(ctx, target.Endpoint())
 	if err != nil {
 		return nil, err
 	}
