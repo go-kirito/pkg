@@ -35,3 +35,5 @@ func NewString() string {
 func NewBase64() string {
 	return node.Generate().Base64()
 }
+
+// 生成通过Grpc调用id生成器

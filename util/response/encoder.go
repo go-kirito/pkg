@@ -30,8 +30,12 @@ func Encoder(w http.ResponseWriter, r *http.Request, v interface{}) error {
 	if err != nil {
 		return err
 	}
-
-	body := fmt.Sprintf("{\"success\":true,\"code\":\"0\",\"message\":\"\",\"data\":%s}", string(data))
+	var body string
+	if codec.Name() == "json" {
+		body = fmt.Sprintf("{\"success\":true,\"code\":\"0\",\"message\":\"\",\"data\":%s}", string(data))
+	} else {
+		body = string(data)
+	}
 
 	w.Header().Set("Content-Type", httputil.ContentType(codec.Name()))
 	w.Write([]byte(body))
@@ -60,11 +64,17 @@ func ErrorEncoder(w http.ResponseWriter, r *http.Request, err error) {
 		Data:    nil,
 	}
 
-	body, err := codec.Marshal(resp)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	var body []byte
+	if codec.Name() == "json" {
+		body, err = codec.Marshal(resp)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	} else {
+		body = []byte(se.Message)
 	}
+
 	w.Header().Set("Content-Type", httputil.ContentType(codec.Name()))
 	w.WriteHeader(int(se.Code))
 	w.Write(body)
