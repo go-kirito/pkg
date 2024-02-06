@@ -5,7 +5,6 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
-	"github.com/go-kirito/pkg/zlog"
 )
 
 func AesDecrypt(str string, newKey string, newIV string) ([]byte, error) {
@@ -65,8 +64,6 @@ func PKCS7UnPadding(origData []byte) []byte {
 	length := len(origData)
 
 	unPadding := int(origData[length-1])
-
-	zlog.Infof("length: %d, unpadding: %d", length, unPadding)
 
 	return origData[:(length - unPadding)]
 }
