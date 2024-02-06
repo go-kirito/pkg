@@ -163,7 +163,7 @@ func writeEncryptConfigAs(path string, secretKey string, iv string) error {
 	}
 
 	arr := strings.Split(path, ".")
-	filename := arr[:len(arr)-1]
+	filename := strings.Join(arr[:len(arr)-1], ".")
 	ext := arr[len(arr)-1]
 
 	newFileName := fmt.Sprintf("%s_encrypt.%s", filename, ext)

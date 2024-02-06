@@ -20,6 +20,9 @@ func AesDecrypt(str string, newKey string, newIV string) ([]byte, error) {
 		return nil, err
 	}
 
+	var blockSize = block.BlockSize()
+	newIV = newIV[:blockSize]
+
 	blockMode := cipher.NewCBCDecrypter(block, []byte(newIV))
 
 	origData := make([]byte, len(decodeBytes))
