@@ -128,6 +128,29 @@ func WriteEncryptConfig(path string, secretKey string, iv string) error {
 		return errors.New("key length must be 16, 24, 32")
 	}
 
+	err = writeEncryptConfigAs(path, secretKey, iv)
+	if err != nil {
+		return err
+	}
+
+	if err := v.ReadInConfig(); err != nil {
+		return err
+	}
+
+	log.Printf("[config] Load Config File:%s\n", v.ConfigFileUsed())
+
+	includes := v.GetStringSlice("includes")
+	for _, path := range includes {
+		err = writeEncryptConfigAs(path, secretKey, iv)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func writeEncryptConfigAs(path string, secretKey string, iv string) error {
 	fd, err := os.ReadFile(path)
 	if err != nil {
 		return err
@@ -150,41 +173,6 @@ func WriteEncryptConfig(path string, secretKey string, iv string) error {
 	if err != nil {
 		return err
 	}
-
-	if err := v.ReadInConfig(); err != nil {
-		return err
-	}
-
-	log.Printf("[config] Load Config File:%s\n", v.ConfigFileUsed())
-
-	includes := v.GetStringSlice("includes")
-	for _, path := range includes {
-
-		fd, err := os.ReadFile(path)
-		if err != nil {
-			return err
-		}
-
-		encrypt, err := crypt.AseEncrypt(fd, []byte(secretKey), []byte(iv))
-
-		if err != nil {
-			return err
-		}
-
-		arr := strings.Split(path, ".")
-		filename := arr[:len(arr)-1]
-		ext := arr[len(arr)-1]
-
-		newFileName := fmt.Sprintf("%s_encrypt.%s", filename, ext)
-
-		err = os.WriteFile(newFileName, []byte(encrypt), 0644)
-
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
 
 func UnmarshalKey(key string, val interface{}) error {
