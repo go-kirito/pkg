@@ -173,6 +173,8 @@ func writeEncryptConfigAs(path string, secretKey string, iv string) error {
 	if err != nil {
 		return err
 	}
+
+	return nil
 }
 
 func UnmarshalKey(key string, val interface{}) error {
