@@ -7,8 +7,13 @@ package zconfig
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
+	"github.com/go-kirito/pkg/util/crypt"
 	"io/ioutil"
 	"log"
+	"os"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -22,6 +27,7 @@ func Load(path string) error {
 	)
 
 	v.AddConfigPath(".")
+
 	v.SetConfigFile(path)
 
 	if err := v.ReadInConfig(); err != nil {
@@ -48,6 +54,137 @@ func Load(path string) error {
 	conf = v
 
 	return err
+}
+
+func LoadEncrypt(path string, secretKey string, iv string) error {
+	keyLength := len(secretKey)
+	if keyLength != 16 && keyLength != 24 && keyLength != 32 {
+		return errors.New("key length must be 16, 24, 32")
+	}
+	var (
+		err error
+		v   = viper.New()
+	)
+
+	v.AddConfigPath(".")
+
+	v.SetConfigFile(path)
+
+	fd, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	plainText, err := crypt.AesDecrypt(string(fd), secretKey, iv)
+
+	if err != nil {
+		return err
+	}
+
+	if err := v.ReadConfig(bytes.NewReader(plainText)); err != nil {
+		return err
+	}
+
+	log.Printf("[config] Load Config File:%s\n", v.ConfigFileUsed())
+
+	includes := v.GetStringSlice("includes")
+	for _, i := range includes {
+
+		fd, err := os.ReadFile(i)
+		if err != nil {
+			log.Fatal("[config] Load Config err:", err.Error())
+			return err
+		}
+
+		plainText, err := crypt.AesDecrypt(string(fd), secretKey, iv)
+
+		if err != nil {
+			return err
+		}
+
+		v.MergeConfig(bytes.NewReader(plainText))
+
+		log.Printf("[config] Load Config File:%s\n", i)
+
+	}
+
+	conf = v
+
+	return err
+}
+
+func WriteEncryptConfig(path string, secretKey string, iv string) error {
+	var (
+		err error
+		v   = viper.New()
+	)
+
+	v.AddConfigPath(".")
+
+	v.SetConfigFile(path)
+
+	keyLength := len(secretKey)
+	if keyLength != 16 && keyLength != 24 && keyLength != 32 {
+		return errors.New("key length must be 16, 24, 32")
+	}
+
+	fd, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	encrypt, err := crypt.AseEncrypt(fd, []byte(secretKey), []byte(iv))
+
+	if err != nil {
+		return err
+	}
+
+	arr := strings.Split(path, ".")
+	filename := arr[:len(arr)-1]
+	ext := arr[len(arr)-1]
+
+	newFileName := fmt.Sprintf("%s_encrypt.%s", filename, ext)
+
+	err = os.WriteFile(newFileName, []byte(encrypt), 0644)
+
+	if err != nil {
+		return err
+	}
+
+	if err := v.ReadInConfig(); err != nil {
+		return err
+	}
+
+	log.Printf("[config] Load Config File:%s\n", v.ConfigFileUsed())
+
+	includes := v.GetStringSlice("includes")
+	for _, path := range includes {
+
+		fd, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+
+		encrypt, err := crypt.AseEncrypt(fd, []byte(secretKey), []byte(iv))
+
+		if err != nil {
+			return err
+		}
+
+		arr := strings.Split(path, ".")
+		filename := arr[:len(arr)-1]
+		ext := arr[len(arr)-1]
+
+		newFileName := fmt.Sprintf("%s_encrypt.%s", filename, ext)
+
+		err = os.WriteFile(newFileName, []byte(encrypt), 0644)
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func UnmarshalKey(key string, val interface{}) error {
