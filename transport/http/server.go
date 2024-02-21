@@ -175,22 +175,28 @@ func (s *Server) filter() mux.MiddlewareFunc {
 				pathTemplate, _ = route.GetPathTemplate()
 			}
 			tr := &Transport{
-				endpoint:     s.endpoint.String(),
 				operation:    pathTemplate,
 				reqHeader:    headerCarrier(req.Header),
 				replyHeader:  headerCarrier(w.Header()),
 				request:      req,
 				pathTemplate: pathTemplate,
 			}
-			ctx = transport.NewServerContext(ctx, tr)
-			next.ServeHTTP(w, req.WithContext(ctx))
+
+			if s.endpoint != nil {
+				tr.endpoint = s.endpoint.String()
+			}
+
+			tr.request = req.WithContext(transport.NewServerContext(ctx, tr))
+			//ctx = transport.NewServerContext(ctx, tr)
+			next.ServeHTTP(w, tr.request)
 		})
 	}
 }
 
 // Endpoint return a real address to registry endpoint.
 // examples:
-//   http://127.0.0.1:8000?isSecure=false
+//
+//	http://127.0.0.1:8000?isSecure=false
 func (s *Server) Endpoint() (*url.URL, error) {
 	s.once.Do(func() {
 		if s.endpoint != nil {
