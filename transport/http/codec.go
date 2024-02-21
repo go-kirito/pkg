@@ -1,7 +1,8 @@
 package http
 
 import (
-	"io/ioutil"
+	"bytes"
+	"io"
 	"net/http"
 
 	"github.com/go-kirito/pkg/encoding"
@@ -27,7 +28,12 @@ func DefaultRequestDecoder(r *http.Request, v interface{}) error {
 	if !ok {
 		return errors.BadRequest("CODEC", r.Header.Get("Content-Type"))
 	}
-	data, err := ioutil.ReadAll(r.Body)
+	
+	data, err := io.ReadAll(r.Body)
+
+	// reset body.
+	r.Body = io.NopCloser(bytes.NewBuffer(data))
+
 	if err != nil {
 		return errors.BadRequest("CODEC", err.Error())
 	}
